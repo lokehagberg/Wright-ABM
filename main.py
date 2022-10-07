@@ -98,8 +98,7 @@ def historical_development(self, time_steps):
             agents.wage_payment(agent, start_wage_lb, start_wage_ub)
         
 
-test_1_ABM = ABM
-test_1_ABM.time_steps(100)
+#100 time steps is the ordinary
 
 #measure classes
 #measure number of employed in what number of firms (by employer)
