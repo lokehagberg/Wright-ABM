@@ -4,31 +4,35 @@ from numpy.random import choice
 import matplotlib.pyplot as plt
 
 
-agents:                list = [],
-total_wealth:          int = 100000,
-start_wage_lb:         int = 0,
-start_wage_ub:         int = 10,
-start_average_wage:    int = 5,
-start_market_value:    int = 0
+agents = []              
+total_wealth = 100000
+start_wage_lb = 0
+start_wage_ub = 10
+start_average_wage = 5
+start_market_value = 0
 
 
-def is_employee(self, agent):
+#The three following sets are mutually disjoint
+
+def is_employee(agent):
     return(agents[agent][1] != 0)
 
-def employers(self):
+def employers():
     employers = [] 
     for i in range(len(agents)):
         if is_employee(i):
             employers.append(agents[i][1])
     return(employers)
 
-def is_unemployed(self, agent):
+def is_unemployed(agent):
     return((not is_employee(agent)) and (agent not in employers))
 
-def selection(self):
+#The following are the rules
+
+def selection():
     return(choice(len(agents)) - 1)
 
-def hiring(self, agent, average_wage):
+def hiring(agent, average_wage):
     if not is_employee(agent):
         potential_employer_wealth = []
         total_potential_employer_wealth = 0
@@ -42,7 +46,7 @@ def hiring(self, agent, average_wage):
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
 
-def expenditure(self, agent, market_value):
+def expenditure(agent, market_value):
     consumer = agent
     while consumer == agent:
         consumer = choice(agents) 
@@ -51,8 +55,8 @@ def expenditure(self, agent, market_value):
     market_value += expense
     return(market_value)
 
-def market_sample(self, agent, market_value):
-    if agents.unemployed == 0:
+def market_sample(agent, market_value):
+    if not is_unemployed(agent):
         sample = choice(market_value)
         market_value += -sample
         if agents[agent][1] == 0:
@@ -61,7 +65,7 @@ def market_sample(self, agent, market_value):
             agents[agents[agent][1]][0] += sample
         return(market_value)
 
-def firing(self, agent, average_wage): 
+def firing(agent, average_wage): 
     if agent in agents.employers:
         number_of_employed = 0
         employed = []
@@ -76,7 +80,7 @@ def firing(self, agent, average_wage):
             agents[fired][1] = 0
 
 
-def wage_payment(self, agent, wage_lb, wage_ub):
+def wage_payment(agent, wage_lb, wage_ub):
     if agent in agents.employers:
         for i in range(agents):
             if agents[i][1] == agent:
@@ -86,16 +90,16 @@ def wage_payment(self, agent, wage_lb, wage_ub):
                 agents[agent][0] += -wage
                 agents[i][0] += wage
 
-def historical_development(self, time_steps):
+def historical_development(time_steps):
     market_value = start_market_value
     for i in range(time_steps):
         for j in range(len(agents)):
-            agent = agents.selection
-            agents.hiring(agent, start_average_wage)
-            market_value = agents.expenditure(agent, market_value)
-            market_value = agents.market_sample(agent, market_value)
-            agents.firing(agent, start_average_wage)
-            agents.wage_payment(agent, start_wage_lb, start_wage_ub)
+            agent = selection(agents)
+            hiring(agent, start_average_wage)
+            market_value = expenditure(agent, market_value)
+            market_value = market_sample(agent, market_value)
+            firing(agent, start_average_wage)
+            wage_payment(agent, start_wage_lb, start_wage_ub)
         
 
 #100 time steps is the ordinary
