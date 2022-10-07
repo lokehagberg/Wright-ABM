@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 agents = []              
 total_wealth = 100000
-start_wage_lb = 0
-start_wage_ub = 10
-start_average_wage = 5
+start_wage_lb = 10
+start_wage_ub = 90
+start_average_wage = 50
 start_market_value = 0
 
 
