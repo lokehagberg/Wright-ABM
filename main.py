@@ -20,11 +20,8 @@ class ABM:
         self.start_wage_ub = start_wage_ub
         self.start_average_wage = start_average_wage
     
-    def employee(self, agent):
-        if self.agents[agent][1] != 0:
-            return(1)
-        else:
-            return(0)
+    def is_employee(self, agent):
+        return(self.agents[agent][1] != 0)
 
     def employers(self):
         employers = [] 
@@ -33,11 +30,8 @@ class ABM:
                 employers.append(self.agents[i][1])
         return(employers)
 
-    def unemployed(self, agent):
-        if (self.agents[agent][1] == 0) and (agent not in self.employers):
-            return(1)
-        else:
-            return(0)
+    def is_unemployed(self, agent):
+        return((self.agents[agent][1] == 0) and (agent not in self.employers))
     
     def selection(self):
         return(choice(len(self.agents)) - 1)
