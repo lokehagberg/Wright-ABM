@@ -93,7 +93,7 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 def historical_development(agents, time_steps):
     market_value = start_market_value
     number_employed_month_list, number_unemployed_month_list, number_employers_month_list = [], [], []
-    market_value_month_list, total_wage_bill_month_list = []
+    market_value_month_list, total_wage_bill_month_list = [], []
     for i in range(time_steps):
         total_wage_bill = 0
         for j in range(len(agents)):
