@@ -14,30 +14,30 @@ start_market_value = 0
 
 #The three following sets are mutually disjoint
 
-def is_employee(agent):
+def is_employee(agents, agent):
     return(agents[agent][1] != 0)
 
-def employers():
+def employers(agents):
     employers = [] 
     for i in range(len(agents)):
-        if is_employee(i):
+        if is_employee(agents=agents, agent=i):
             employers.append(agents[i][1])
     return(employers)
 
-def is_unemployed(agent):
-    return((not is_employee(agent)) and (agent not in employers))
+def is_unemployed(agents, agent):
+    return((not is_employee(agents=agents, agent=agent)) and (agent not in employers(agents=agents)))
 
 #The following are the rules
 
-def selection():
+def selection(agents):
     return(choice(len(agents)) - 1)
 
-def hiring(agent, average_wage):
-    if not is_employee(agent):
+def hiring(agents, agent, average_wage):
+    if not is_employee(agents=agents, agent=agent):
         potential_employer_wealth = []
         total_potential_employer_wealth = 0
         for i in range(len(agents)):
-            if is_employee(i) == 0:
+            if is_employee(agents=agents, agent=i) == 0:
                 potential_employer_wealth.append(agents[i][0])
                 total_potential_employer_wealth += agents[i][0]
             else: 
@@ -46,7 +46,7 @@ def hiring(agent, average_wage):
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
 
-def expenditure(agent, market_value):
+def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
         consumer = choice(agents) 
@@ -55,8 +55,8 @@ def expenditure(agent, market_value):
     market_value += expense
     return(market_value)
 
-def market_sample(agent, market_value):
-    if not is_unemployed(agent):
+def market_sample(agents, agent, market_value):
+    if not is_unemployed(agents=agents, agent=agent):
         sample = choice(market_value)
         market_value += -sample
         if agents[agent][1] == 0:
@@ -65,8 +65,8 @@ def market_sample(agent, market_value):
             agents[agents[agent][1]][0] += sample
         return(market_value)
 
-def firing(agent, average_wage): 
-    if agent in agents.employers:
+def firing(agents, agent, average_wage): 
+    if agent in employers(agents=agents):
         number_of_employed = 0
         employed = []
         for i in range(agents):
@@ -79,9 +79,8 @@ def firing(agent, average_wage):
             employed.remove(fired)
             agents[fired][1] = 0
 
-
-def wage_payment(agent, wage_lb, wage_ub):
-    if agent in agents.employers:
+def wage_payment(agents, agent, wage_lb, wage_ub):
+    if agent in employers(agents=agents, agent=agent):
         for i in range(agents):
             if agents[i][1] == agent:
                 wage = 0
@@ -90,29 +89,53 @@ def wage_payment(agent, wage_lb, wage_ub):
                 agents[agent][0] += -wage
                 agents[i][0] += wage
 
-def historical_development(time_steps):
-    market_value = start_market_value
-    for i in range(time_steps):
-        for j in range(len(agents)):
-            agent = selection(agents)
-            hiring(agent, start_average_wage)
-            market_value = expenditure(agent, market_value)
-            market_value = market_sample(agent, market_value)
-            firing(agent, start_average_wage)
-            wage_payment(agent, start_wage_lb, start_wage_ub)
-        
-
 #100 time steps is the ordinary
+def historical_development(agents, time_steps):
+    market_value = start_market_value
+    number_employed_month_list, number_unemployed_month_list, number_employers_month_list = [], [], []
+    market_value_month_list, total_wage_bill_month_list = []
+    for i in range(time_steps):
+        total_wage_bill = 0
+        for j in range(len(agents)):
+            value_before_wage, value_after_wage = [], []
+            agent = selection(agents=agents)
+            hiring(agents=agents, agent=agent, average_wage=start_average_wage)
+            market_value = expenditure(agents=agents, agent=agent, market_value=market_value)
+            market_value = market_sample(agents=agents, agent=agent, market_value=market_value)
+            firing(agents=agents, agent=agent, average_wage=start_average_wage)
+            for k in range(len(agents)):
+                value_before_wage.append(agents[k][0])
+            wage_payment(agents=agents, agent=agent, wage_lb=start_wage_lb, wage_ub=start_wage_ub)
+            for k in range(len(agents)):
+                value_after_wage.append(agents[k][0])
+            total_wage_bill += np.dot(abs(np.array(value_after_wage) - np.array(value_before_wage)), np.array([1]*len(agents)))
+        #measure class composition, the firms by number of employed, market value, wage bill
+        number_employed, number_unemployed = 0, 0
+        firm_size_month_list = []
+        for j in range(len(agents)): 
+            firm_size_month_list.append(employers(agents=agents).count(j))
+            if is_employee(agents=agents, agent=j):
+                number_employed += 1
+            elif is_unemployed(agents=agents, agent=j):
+                number_unemployed += 1
+        number_employed_month_list.append(number_employed)
+        number_unemployed_month_list.append(number_unemployed)
+        number_employers_month_list.append(len(agents) - number_employed - number_unemployed)
+        total_wage_bill_month_list.append(total_wage_bill)
+        market_value_month_list.append(market_value)
 
-#measure classes
-#measure number of employed in what number of firms (by employer)
-#firm growth per month
-#firm demises per month
-#GDP: the total firm revenue / previous
-#measure the number of months the above is below or above 1 
-#the wage share is the total wage bill per firm revenue a year
-#wealth distribution per year
+
+#The total removed market value one month divided by the previous is the GDP growth
+#Measure the number of months the above is below or above 1 to get the recession time
+#The wage share is the total wage bill per firm revenue a year
+#Printing the agents wealth we get the wealth distribution monthly
+#Checking the employers ceasing to be employers gives the firm demises
+#Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
+
+
+
+
                 
 
 
