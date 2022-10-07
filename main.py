@@ -3,13 +3,14 @@ import numpy as np
 from numpy.random import choice
 import matplotlib.pyplot as plt
 
-
-agents = []              
-total_wealth = 100000
+number_of_agents = 1000
+start_total_wealth = 100000
+start_agents = [start_total_wealth/number_of_agents,0]*number_of_agents
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
 start_market_value = 0
+start_time_steps = 100
 
 
 #The three following sets are mutually disjoint
@@ -89,7 +90,6 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
                 agents[agent][0] += -wage
                 agents[i][0] += wage
 
-#100 time steps is the ordinary
 def historical_development(agents, time_steps):
     market_value = start_market_value
     number_employed_month_list, number_unemployed_month_list, number_employers_month_list = [], [], []
@@ -132,6 +132,9 @@ def historical_development(agents, time_steps):
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
+
+
+historical_development(agents=start_agents, time_steps=start_time_steps)
 
 
 
