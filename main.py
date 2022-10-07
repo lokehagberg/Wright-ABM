@@ -11,14 +11,14 @@ class ABM:
                  start_wage_lb:         int = 0,
                  start_wage_ub:         int = 10,
                  start_average_wage:    int = 5,
-                 start_market_value:    int = 0,
-                 time_steps:            int = 100
+                 start_market_value:    int = 0
                  ):
         self.agents = agents
         self.total_wealth = total_wealth
         self.start_wage_lb = start_wage_lb
         self.start_wage_ub = start_wage_ub
         self.start_average_wage = start_average_wage
+        self.start_market_value = start_market_value
     
     def is_employee(self, agent):
         return(self.agents[agent][1] != 0)
@@ -37,11 +37,11 @@ class ABM:
         return(choice(len(self.agents)) - 1)
     
     def hiring(self, agent, average_wage):
-        if self.agents[agent][1] == 0:
+        if not self.is_employee(agent):
             proto_probability_of_hire = []
             potential_employer_wealth = 0
             for i in range(len(self.agents)):
-                if self.employee(self, i) == 0:
+                if self.is_employee(i) == 0:
                     proto_probability_of_hire.append(self.agents[i][0])
                     potential_employer_wealth += self.agents[i][0]
                 else: 
@@ -107,7 +107,7 @@ class ABM:
             
 
 test_1_ABM = ABM
-test_1_ABM.time_steps
+test_1_ABM.time_steps(100)
 
 #measure classes
 #measure number of employed in what number of firms (by employer)
