@@ -74,7 +74,7 @@ def market_sample(agents, agent, market_value):
         if agents[agent][1] == 0:
             agents[agent][0] += sample
         else: 
-            agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample
+            agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample #TODO check this line
         return(market_value)
 
 def firing(agents, agent, average_wage): 
