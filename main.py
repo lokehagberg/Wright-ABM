@@ -32,7 +32,7 @@ def is_unemployed(agents, agent):
 #The following are the rules
 
 def selection(agents):
-    return(abs(choice(len(agents)) - 1))
+    return(choice(len(agents)))
 
 def hiring(agents, agent, average_wage):
     if not is_employee(agents=agents, agent=agent):
@@ -47,16 +47,16 @@ def hiring(agents, agent, average_wage):
         picked_employer_probability = []
         for i in range(len(potential_employer_wealth)):
             picked_employer_probability.append(potential_employer_wealth[i]/total_potential_employer_wealth)
-        picked_employer = abs(choice(len(agents), p=(picked_employer_probability)) - 1)
+        picked_employer = choice(len(agents), p=(picked_employer_probability)) 
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
 
 def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
-        consumer = abs(choice(len(agents)) - 1)
+        consumer = choice(len(agents)) 
     if agents[consumer][0] > 0:
-        expense = abs(choice(math.floor(agents[consumer][0])))
+        expense = choice(math.floor(agents[consumer][0]))
     else:
         expense = 0
     agents[consumer][1] += -expense
@@ -66,7 +66,7 @@ def expenditure(agents, agent, market_value):
 def market_sample(agents, agent, market_value):
     if not is_unemployed(agents=agents, agent=agent):
         if market_value > 0:
-            sample = abs(choice(market_value))
+            sample = choice(market_value)
         else:
             sample = 0
         market_value += -sample
@@ -86,7 +86,7 @@ def firing(agents, agent, average_wage):
                 employed.append[i]
         number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)    
         for i in range(number_fired):
-            fired = abs(choice(employed))
+            fired = choice(employed)
             employed.remove(fired)
             agents[fired][1] = 0
 
@@ -96,7 +96,7 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
             if agents[i][1] == agent:
                 wage = 0
                 while wage < wage_lb:
-                    wage = abs(choice(wage_ub))
+                    wage = choice(wage_ub)
                 agents[agent][0] += -wage
                 agents[i][0] += wage
 
@@ -143,7 +143,6 @@ def historical_development(agents, time_steps):
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
 
-#TODO check choice and -1 maybe remove abs (?)
 
 historical_development(agents=start_agents, time_steps=start_time_steps)
 
