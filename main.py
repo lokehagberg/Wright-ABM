@@ -50,6 +50,7 @@ def hiring(agents, agent, average_wage):
         picked_employer = choice(len(agents), p=(picked_employer_probability)) 
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
+#TODO all employerschange, why?
 
 def expenditure(agents, agent, market_value):
     consumer = agent
