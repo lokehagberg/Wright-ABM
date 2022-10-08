@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 number_of_agents = 1000
 start_total_wealth = 100000
-start_agents = [start_total_wealth/number_of_agents,0]*number_of_agents
+start_agents = [[0, start_total_wealth/number_of_agents]*number_of_agents]
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
@@ -50,7 +50,7 @@ def hiring(agents, agent, average_wage):
 def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
-        consumer = choice(agents) 
+        consumer = choice(len(agents)) - 1 
     expense = choice(agents[consumer][0])
     agents[consumer][1] += -expense
     market_value += expense
