@@ -1,6 +1,7 @@
 from copy import deepcopy
 import numpy as np
 from numpy.random import choice
+import math
 import matplotlib.pyplot as plt
 
 number_of_agents = 10 #1000
@@ -43,7 +44,10 @@ def hiring(agents, agent, average_wage):
                 total_potential_employer_wealth += agents[i][0]
             else: 
                 potential_employer_wealth.append(0.0)
-        picked_employer = choice(len(agents), p=(potential_employer_wealth/total_potential_employer_wealth)) - 1
+        picked_employer_probability = []
+        for i in range(len(potential_employer_wealth)):
+            picked_employer_probability.append(potential_employer_wealth[i]/total_potential_employer_wealth)
+        picked_employer = choice(len(agents), p=(picked_employer_probability)) - 1
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
 
@@ -52,7 +56,7 @@ def expenditure(agents, agent, market_value):
     while consumer == agent:
         consumer = choice(len(agents)) - 1 
     if agents[consumer][0] > 0:
-        expense = choice(agents[consumer][0])
+        expense = choice(math.floor(agents[consumer][0]))
     else:
         expense = 0
     agents[consumer][1] += -expense
@@ -69,7 +73,7 @@ def market_sample(agents, agent, market_value):
         if agents[agent][1] == 0:
             agents[agent][0] += sample
         else: 
-            agents[agents[agent][1]][0] += sample
+            agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample
         return(market_value)
 
 def firing(agents, agent, average_wage): 
