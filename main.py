@@ -143,6 +143,7 @@ def historical_development(agents, time_steps):
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
 
+#check choice and -1 maybe remove abs (?)
 
 historical_development(agents=start_agents, time_steps=start_time_steps)
 
