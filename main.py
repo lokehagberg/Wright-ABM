@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 number_of_agents = 10 #1000
 start_total_wealth = 100000
-start_agents = [[0, start_total_wealth/number_of_agents]*number_of_agents]
+start_agents = [[start_total_wealth/number_of_agents, 0]]*number_of_agents
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
@@ -43,7 +43,7 @@ def hiring(agents, agent, average_wage):
                 total_potential_employer_wealth += agents[i][0]
             else: 
                 potential_employer_wealth.append(0.0)
-        picked_employer = choice(agents, p=(potential_employer_wealth/total_potential_employer_wealth)) - 1
+        picked_employer = choice(len(agents), p=(potential_employer_wealth/total_potential_employer_wealth)) - 1
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
 
@@ -51,14 +51,20 @@ def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
         consumer = choice(len(agents)) - 1 
-    expense = choice(agents[consumer][0])
+    if agents[consumer][0] > 0:
+        expense = choice(agents[consumer][0])
+    else:
+        expense = 0
     agents[consumer][1] += -expense
     market_value += expense
     return(market_value)
 
 def market_sample(agents, agent, market_value):
     if not is_unemployed(agents=agents, agent=agent):
-        sample = choice(market_value)
+        if market_value > 0:
+            sample = choice(market_value)
+        else:
+            sample = 0
         market_value += -sample
         if agents[agent][1] == 0:
             agents[agent][0] += sample
