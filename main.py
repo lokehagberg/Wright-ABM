@@ -114,14 +114,14 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
 def amortization(agents, agent, total_debt):
-    if agents[agent][0] > 0:
-        amortization = choice(math.floor(agents[agent][0]))
+    if (math.floor(agents[agent][0]) and math.floor(total_debt)) > 0:
+        amortization = min(choice(math.floor(agents[agent][0])), math.floor(total_debt))
         agents[agent][0] += - amortization
         total_debt += - amortization
     return(total_debt)
 
 def loan(agents, agent, total_debt): 
-    if agents[agent][0] > 0:
+    if math.floor(agents[agent][0]) > 0:
         loan = choice(math.floor(agents[agent][0]))
         agents[agent][0] += loan
         total_debt += loan 
@@ -131,8 +131,8 @@ def interest_effect(agents, total_debt, bank_gains):
     total_saving = 0
     for i in range(len(agents)):
         total_saving += agents[i][0]
-    loan_interest_rate = random.uniform(0.04/12.00, 0.12/12.00)    
-    savings_interest_rate = random.uniform(0.00/12.00, 0.04/12.00)
+    loan_interest_rate = (random.uniform(3, 10))/1000    
+    savings_interest_rate = (random.uniform(0, 3))/1000
     bank_gains += total_debt * loan_interest_rate - total_saving * savings_interest_rate
     total_debt += total_debt * loan_interest_rate
     return(total_debt, bank_gains)
@@ -171,12 +171,10 @@ def historical_development(agents, time_steps, financial_aspect):
             if financial_aspect:
                 total_debt = amortization(agents=agents, agent=agent, total_debt=total_debt)
                 total_debt = loan(agents=agents, agent=agent, total_debt=total_debt)
-                debt_change_month_list.append(total_debt)
                 interest_result = interest_effect(agents=agents, total_debt=total_debt, bank_gains=bank_gains)
                 total_debt = interest_result[0]
                 bank_gains = interest_result[1]
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
-                bank_gains_month_list.append(bank_gains)
                 
         #measure class composition, the firms by number of employed, market value, wage bill
         agents_month_list.append(agents)
@@ -193,6 +191,8 @@ def historical_development(agents, time_steps, financial_aspect):
         number_employers_month_list.append(len(agents) - number_employed - number_unemployed)
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
+        debt_change_month_list.append(total_debt)
+        bank_gains_month_list.append(bank_gains)
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
     total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list)
 
