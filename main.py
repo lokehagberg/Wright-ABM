@@ -149,16 +149,4 @@ def historical_development(agents, time_steps):
 historical_development(agents=start_agents, time_steps=start_time_steps)
 
 
-
-
-                
-
-
-        
-
-
-    
-
-
-
  
