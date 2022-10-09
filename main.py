@@ -39,8 +39,9 @@ def hiring(agents, agent, average_wage):
         total_potential_employer_wealth = 0
         for i in range(len(agents)):
             if is_employee(agents=agents, agent=i) == 0:
-                potential_employer_wealth.append(agents[i][0])
-                total_potential_employer_wealth += agents[i][0]
+                potential_employer_wealth.append(max(agents[i][0],0.0))
+                total_potential_employer_wealth += max(agents[i][0], 0.0)
+                #If the wealth is negative the probability is zero
             else: 
                 potential_employer_wealth.append(0.0)
         picked_employer_probability = []
@@ -84,7 +85,7 @@ def firing(agents, agent, average_wage):
             if agents[i][1] == agent:
                 number_of_employed += 1
                 employed.append(i)
-        number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)    
+        number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)  
         for i in range(math.floor(number_fired)):
             fired = choice(employed)
             employed.remove(fired)
