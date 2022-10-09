@@ -130,7 +130,7 @@ def loan(agents, agent, total_debt):
 def interest_effect(agents, total_debt, bank_gains):
     if total_debt > 0:
         employer_savings = 0
-        for i in range(len(set(employers(agents=agents)))):
+        for i in range(len(employers(agents=agents))):
             employer_savings += agents[employers(agents=agents)[i]][0]
         loan_interest_rate = (random.uniform(3, 10))/1000    
         saving_interest_rate = (random.uniform(0, 3))/1000    
