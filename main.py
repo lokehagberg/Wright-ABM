@@ -87,9 +87,10 @@ def firing(agents, agent, average_wage):
                 employed.append(i)
         number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)  
         for i in range(math.floor(number_fired)):
-            fired = choice(employed)
-            employed.remove(fired)
-            agents[fired][1] = 0
+            if employed != []:
+                fired = choice(employed)
+                employed.remove(fired)
+                agents[fired][1] = 0
 
 def wage_payment(agents, agent, wage_lb, wage_ub):
     if agent not in employers(agents=agents):
