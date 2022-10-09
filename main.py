@@ -5,12 +5,12 @@ import math
 import matplotlib.pyplot as plt
 
 number_of_agents = 1000 #1000
-start_total_wealth = 100000
-start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
-start_wage_lb = 10
-start_wage_ub = 90
-start_average_wage = 50
-start_market_value = 0
+start_total_wealth = 100000 #100000
+start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
+start_wage_lb = 10 #10
+start_wage_ub = 90 #90
+start_average_wage = 50 #50
+start_market_value = 0 #0
 start_time_steps = 100 #100
 
 #The three following sets are mutually disjoint
