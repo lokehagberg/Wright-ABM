@@ -109,7 +109,7 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 def historical_development(agents, time_steps):
     market_value = start_market_value
     number_employed_month_list, number_unemployed_month_list, number_employers_month_list = [], [], []
-    market_value_month_list, total_wage_bill_month_list = [], []
+    market_value_month_list, total_wage_bill_month_list, agents_month_list = [], [], []
     for i in range(time_steps):
         total_wage_bill = 0
         for j in range(len(agents)):
@@ -126,6 +126,7 @@ def historical_development(agents, time_steps):
                 value_after_wage.append(agents[k][0])
             total_wage_bill += np.dot(abs(np.asarray(value_after_wage) - np.asarray(value_before_wage)), np.array([1]*len(agents)))
         #measure class composition, the firms by number of employed, market value, wage bill
+        agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
         firm_size_month_list = []
         for j in range(len(agents)): 
@@ -140,10 +141,10 @@ def historical_development(agents, time_steps):
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
-    total_wage_bill_month_list, market_value_month_list)
+    total_wage_bill_month_list, market_value_month_list, agents_month_list)
 
 
-number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list = historical_development(agents=start_agents, time_steps=start_time_steps)
+number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list, agents_month_list = historical_development(agents=start_agents, time_steps=start_time_steps)
 
 
 fig1 = plt.figure()
@@ -207,10 +208,16 @@ n, bins, patches = ax7.hist(total_wage_share_month_list)
 ax7.set_xlabel('Total wage share')
 ax7.set_ylabel('Frequency')
 
+wealth_month_list, employers_month_list = [], []
+for i in range(len(agents_month_list)):
+    employers_month_list.append(employers(agents=agents_month_list))
+    per_agent_wealth_month_list = []
+    for j in range(len(agents_month_list[0])):
+        per_agent_wealth_month_list = agents_month_list[i][j][0]
+    wealth_month_list.append(per_agent_wealth_month_list)
 #Printing the agents wealth we get the wealth distribution monthly
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
-
 
 plt.show()
 
