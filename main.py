@@ -176,28 +176,40 @@ n, bins, patches = ax5.hist(market_value_month_list)
 ax5.set_xlabel('Market value')
 ax5.set_ylabel('Frequency')
 
-firm_revenue_month_list = []
+total_firm_revenue_month_list = []
 for i in range(len(market_value_month_list) - 1):
-    firm_revenue = market_value_month_list[i+1] - market_value_month_list[i]
-    if 0 > firm_revenue:
-        firm_revenue_month_list.append(firm_revenue)
+    total_firm_revenue = market_value_month_list[i+1] - market_value_month_list[i]
+    if 0 > total_firm_revenue:
+        total_firm_revenue_month_list.append(-total_firm_revenue)
     else:
-        firm_revenue_month_list.append(0)
+        total_firm_revenue_month_list.append(0)
 
 fig6 = plt.figure()
 ax6 = fig6.add_subplot(1, 1, 1)
-n, bins, patches = ax6.hist(firm_revenue_month_list)
+n, bins, patches = ax6.hist(total_firm_revenue_month_list)
 ax6.set_xlabel('Total firm revenue')
 ax6.set_ylabel('Frequency')
 #GDP is given by the total firm revenue over a year, the GDP growth can be derived from this
 #Measure the number of months the above is below or above 1 to get the recession time
 #The yearly wage share is the total wage bill per firm revenue a year
+#100((revenue firm / wage ) - 1) is the rate of profit
 
+total_wage_share_month_list = []
+for i in range(len(total_firm_revenue_month_list)):
+    if total_firm_revenue_month_list[i] != 0:
+        total_wage_share_month_list.append(total_wage_bill_month_list[i]/total_firm_revenue_month_list[i])
+    else:
+        total_wage_share_month_list.append(total_wage_bill_month_list[i]/total_firm_revenue_month_list[i])
+
+fig7 = plt.figure()
+ax7 = fig7.add_subplot(1, 1, 1)
+n, bins, patches = ax7.hist(total_wage_share_month_list)
+ax7.set_xlabel('Total wage share')
+ax7.set_ylabel('Frequency')
 
 #Printing the agents wealth we get the wealth distribution monthly
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
-#100((revenue firm / wage ) - 1) is the rate of profit
 
 
 plt.show()
