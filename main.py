@@ -5,9 +5,9 @@ import math
 import matplotlib.pyplot as plt
 import random
 
-number_of_agents = 1000 #1000
+number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
-start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
+start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10 #10
 start_wage_ub = 90 #90
 start_average_wage = 50 #50
@@ -129,12 +129,13 @@ def loan(agents, agent, total_debt):
 
 def interest_effect(agents, total_debt, bank_gains):
     if total_debt > 0:
-        total_saving = 0
-        for i in range(len(agents)):
-            total_saving += agents[i][0]
+        total_employer_saving = 0
+        for i in range(len(employers(agents=agents))):
+            total_employer_saving += agents[i][0]
         loan_interest_rate = (random.uniform(3, 10))/1000    
-        savings_interest_rate = (random.uniform(0, 3))/1000
-        bank_gains += total_debt * loan_interest_rate - total_saving * savings_interest_rate
+        #Savings interest rates are always low enough to allow bank gains, 
+        # and most savings is by employers
+        bank_gains += total_debt * loan_interest_rate 
         total_debt += total_debt * loan_interest_rate
     return(total_debt, bank_gains)
 
@@ -294,6 +295,8 @@ axs1[1].plot(range(0,len(bank_gains_month_list)), bank_gains_month_list)
 
 plt.show()
 
+#Many agents having specialized behavior that is mechanical makes it less adaptive
+#Network effects nor an intersectional analysis of agents attributes are observed here
 
 
  
