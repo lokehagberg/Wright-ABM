@@ -236,6 +236,11 @@ ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 
 plt.show()
 
+#The following make up financial aspects not included by Ian Wright
+#Monetary expansion and contraction will occur for some class of agents the most, this is an action
+#There are loans and amortization as actions, banks hand out loans and earn by interest rates, and some debt grows with it
+#There is an interest rate corridor that changes as an action
+
 
 
  
