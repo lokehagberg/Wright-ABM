@@ -114,8 +114,8 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
 def amortization(agents, agent, total_debt):
-    if math.floor(agents[agent][0]) > 0:
-        amortization = choice(math.floor(agents[agent][0]))
+    if (math.floor(agents[agent][0]) > 0) and (total_debt > 0):
+        amortization = min(choice(math.floor(agents[agent][0])), total_debt)
         agents[agent][0] += - amortization
         total_debt += - amortization
     return(total_debt)
@@ -127,11 +127,8 @@ def loan(agents, agent, total_debt):
         total_debt += loan 
     return(total_debt)
 
-def interest_effect(agents, total_debt, bank_gains):
+def interest_effect(total_debt, bank_gains):
     if total_debt > 0:
-        total_employer_saving = 0
-        for i in range(len(employers(agents=agents))):
-            total_employer_saving += agents[i][0]
         loan_interest_rate = (random.uniform(3, 10))/1000    
         #Savings interest rates are always low enough to allow bank gains, 
         # and most savings is by employers
@@ -173,7 +170,7 @@ def historical_development(agents, time_steps, financial_aspect):
             if financial_aspect:
                 total_debt = amortization(agents=agents, agent=agent, total_debt=total_debt)
                 total_debt = loan(agents=agents, agent=agent, total_debt=total_debt)
-                interest_result = interest_effect(agents=agents, total_debt=total_debt, bank_gains=bank_gains)
+                interest_result = interest_effect(total_debt=total_debt, bank_gains=bank_gains)
                 total_debt = interest_result[0]
                 bank_gains = interest_result[1]
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
