@@ -13,12 +13,10 @@ start_average_wage = 50
 start_market_value = 0
 start_time_steps = 1 #100
 
-
 #The three following sets are mutually disjoint
 
 def is_employee(agents, agent):
     return(agents[agent][1] != 0)
-
 
 def employers(agents):
     employers = [] 
@@ -27,16 +25,13 @@ def employers(agents):
             employers.append(agents[i][1])
     return(employers)
 
-
 def is_unemployed(agents, agent):
     return((not is_employee(agents=agents, agent=agent)) and (agent not in employers(agents=agents)))
-
 
 #The following are the rules
 
 def selection(agents):
     return(choice(len(agents)))
-
 
 def hiring(agents, agent, average_wage):
     if not is_employee(agents=agents, agent=agent):
@@ -56,7 +51,6 @@ def hiring(agents, agent, average_wage):
             agents[agent][1] = picked_employer
 #TODO all employerschange, why?
 
-
 def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
@@ -68,7 +62,6 @@ def expenditure(agents, agent, market_value):
     agents[consumer][1] += -expense
     market_value += expense
     return(market_value)
-
 
 def market_sample(agents, agent, market_value):
     if not is_unemployed(agents=agents, agent=agent):
@@ -82,7 +75,6 @@ def market_sample(agents, agent, market_value):
         else: 
             agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample #TODO check this line
         return(market_value)
-
 
 def firing(agents, agent, average_wage): 
     if agent in employers(agents=agents):
@@ -98,7 +90,6 @@ def firing(agents, agent, average_wage):
             employed.remove(fired)
             agents[fired][1] = 0
 
-
 def wage_payment(agents, agent, wage_lb, wage_ub):
     if agent not in employers(agents=agents, agent=agent):
         return
@@ -112,7 +103,6 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
             wage = choice(wage_ub)
         agents[agent][0] += -wage
         agents[i][0] += wage
-
 
 def historical_development(agents, time_steps):
     market_value = start_market_value
@@ -148,7 +138,6 @@ def historical_development(agents, time_steps):
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
 
-
 #The total removed market value one month divided by the previous is the GDP growth
 #Measure the number of months the above is below or above 1 to get the recession time
 #The wage share is the total wage bill per firm revenue a year
@@ -156,7 +145,6 @@ def historical_development(agents, time_steps):
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
-
 
 historical_development(agents=start_agents, time_steps=start_time_steps)
 
