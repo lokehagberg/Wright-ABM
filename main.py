@@ -4,14 +4,14 @@ from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
 
-number_of_agents = 10 #1000
+number_of_agents = 1000 #1000
 start_total_wealth = 100000 #100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10 #10
 start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
-start_time_steps = 10 #100
+start_time_steps = 100 #100
 
 #The three following sets are mutually disjoint
 
@@ -224,10 +224,9 @@ non_unemployed_percentage_month_list = []
 for i in range(len(number_unemployed_month_list)):
     non_unemployed_percentage_month_list.append(number_unemployed_month_list[i]/len(agents_month_list[0]))
 
-
 fig8, axs = plt.subplots(2)
-axs[0].plot([1]*len(total_wage_share_month_list), total_wage_share_month_list)
-axs[1].plot([1]*len(non_unemployed_percentage_month_list), non_unemployed_percentage_month_list)
+axs[0].plot(range(0,len(total_wage_share_month_list)), total_wage_share_month_list)
+axs[1].plot(range(0,len(non_unemployed_percentage_month_list)), non_unemployed_percentage_month_list)
 
 plt.show()
 
