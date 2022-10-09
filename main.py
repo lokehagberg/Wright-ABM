@@ -114,8 +114,8 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
 def amortization(agents, agent, total_debt):
-    if (math.floor(agents[agent][0]) and math.floor(total_debt)) > 0:
-        amortization = min(choice(math.floor(agents[agent][0])), math.floor(total_debt))
+    if (math.floor(agents[agent][0]) > 0) and (math.floor(total_debt) > 0):
+        amortization = choice(math.floor(agents[agent][0]))
         agents[agent][0] += - amortization
         total_debt += - amortization
     return(total_debt)
@@ -140,8 +140,8 @@ def interest_effect(agents, total_debt, bank_gains):
 #Credit inflation dominates M0 inflation
 def credit_inflation_effect(agents, agent, bank_gains):
     if agent in employers(agents=agents):
-        if bank_gains > 0:
-            gain_taken = choice(bank_gains)
+        if math.floor(bank_gains) > 0:
+            gain_taken = choice(math.floor(bank_gains))
             agents[agent][0] += gain_taken
             bank_gains = - gain_taken
     return(bank_gains)
