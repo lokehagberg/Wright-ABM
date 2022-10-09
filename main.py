@@ -64,10 +64,9 @@ def expenditure(agents, agent, market_value):
 
 def market_sample(agents, agent, market_value):
     if not is_unemployed(agents=agents, agent=agent):
+        sample = 0
         if market_value > 0:
-            sample = choice(market_value)
-        else:
-            sample = 0
+            sample = choice(math.floor(market_value))
         market_value += -sample
         if agents[agent][1] == 0:
             agents[agent][0] += sample
