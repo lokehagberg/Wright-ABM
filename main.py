@@ -19,6 +19,7 @@ start_time_steps = 1 #100
 def is_employee(agents, agent):
     return(agents[agent][1] != 0)
 
+
 def employers(agents):
     employers = [] 
     for i in range(len(agents)):
@@ -26,13 +27,16 @@ def employers(agents):
             employers.append(agents[i][1])
     return(employers)
 
+
 def is_unemployed(agents, agent):
     return((not is_employee(agents=agents, agent=agent)) and (agent not in employers(agents=agents)))
+
 
 #The following are the rules
 
 def selection(agents):
     return(choice(len(agents)))
+
 
 def hiring(agents, agent, average_wage):
     if not is_employee(agents=agents, agent=agent):
@@ -52,6 +56,7 @@ def hiring(agents, agent, average_wage):
             agents[agent][1] = picked_employer
 #TODO all employerschange, why?
 
+
 def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
@@ -63,6 +68,7 @@ def expenditure(agents, agent, market_value):
     agents[consumer][1] += -expense
     market_value += expense
     return(market_value)
+
 
 def market_sample(agents, agent, market_value):
     if not is_unemployed(agents=agents, agent=agent):
@@ -76,6 +82,7 @@ def market_sample(agents, agent, market_value):
         else: 
             agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample #TODO check this line
         return(market_value)
+
 
 def firing(agents, agent, average_wage): 
     if agent in employers(agents=agents):
@@ -91,15 +98,21 @@ def firing(agents, agent, average_wage):
             employed.remove(fired)
             agents[fired][1] = 0
 
+
 def wage_payment(agents, agent, wage_lb, wage_ub):
-    if agent in employers(agents=agents, agent=agent):
-        for i in range(agents):
-            if agents[i][1] == agent:
-                wage = 0
-                while wage < wage_lb:
-                    wage = choice(wage_ub)
-                agents[agent][0] += -wage
-                agents[i][0] += wage
+    if agent not in employers(agents=agents, agent=agent):
+        return
+
+    for i in range(agents):
+        if agents[i][1] != agent:
+            continue
+
+        wage = 0
+        while wage < wage_lb:
+            wage = choice(wage_ub)
+        agents[agent][0] += -wage
+        agents[i][0] += wage
+
 
 def historical_development(agents, time_steps):
     market_value = start_market_value
