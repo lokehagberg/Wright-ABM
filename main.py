@@ -4,14 +4,14 @@ from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
 
-number_of_agents = 1000 #1000
+number_of_agents = 10 #1000
 start_total_wealth = 100000 #100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10 #10
 start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
-start_time_steps = 100 #100
+start_time_steps = 10 #100
 
 #The three following sets are mutually disjoint
 
@@ -142,21 +142,64 @@ def historical_development(agents, time_steps):
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
     total_wage_bill_month_list, market_value_month_list)
 
-#The total removed market value one month divided by the previous is the GDP growth
+
+number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list = historical_development(agents=start_agents, time_steps=start_time_steps)
+
+
+fig1 = plt.figure()
+ax1 = fig1.add_subplot(1, 1, 1)
+n, bins, patches = ax1.hist(number_employed_month_list)
+ax1.set_xlabel('#Employed')
+ax1.set_ylabel('Frequency')
+
+fig2 = plt.figure()
+ax2 = fig2.add_subplot(1, 1, 1)
+n, bins, patches = ax2.hist(number_unemployed_month_list)
+ax2.set_xlabel('#Unemployed')
+ax2.set_ylabel('Frequency')
+
+fig3 = plt.figure()
+ax3 = fig3.add_subplot(1, 1, 1)
+n, bins, patches = ax3.hist(number_employers_month_list)
+ax3.set_xlabel('#Employers')
+ax3.set_ylabel('Frequency')
+
+fig4 = plt.figure()
+ax4 = fig4.add_subplot(1, 1, 1)
+n, bins, patches = ax4.hist(total_wage_bill_month_list)
+ax4.set_xlabel('Total wage bill')
+ax4.set_ylabel('Frequency')
+
+fig5 = plt.figure()
+ax5 = fig5.add_subplot(1, 1, 1)
+n, bins, patches = ax5.hist(market_value_month_list)
+ax5.set_xlabel('Market value')
+ax5.set_ylabel('Frequency')
+
+firm_revenue_month_list = []
+for i in range(len(market_value_month_list) - 1):
+    firm_revenue = market_value_month_list[i+1] - market_value_month_list[i]
+    if 0 > firm_revenue:
+        firm_revenue_month_list.append(firm_revenue)
+    else:
+        firm_revenue_month_list.append(0)
+
+fig6 = plt.figure()
+ax6 = fig6.add_subplot(1, 1, 1)
+n, bins, patches = ax6.hist(firm_revenue_month_list)
+ax6.set_xlabel('Total firm revenue')
+ax6.set_ylabel('Frequency')
+#GDP is given by the total firm revenue over a year, the GDP growth can be derived from this
 #Measure the number of months the above is below or above 1 to get the recession time
-#The wage share is the total wage bill per firm revenue a year
+#The yearly wage share is the total wage bill per firm revenue a year
+
+
 #Printing the agents wealth we get the wealth distribution monthly
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
 
-number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list = historical_development(agents=start_agents, time_steps=start_time_steps)
 
-print(number_employed_month_list)
-fig, axs = plt.subplots(1, 1,
-                        figsize =(10, 7),
-                        tight_layout = True)
-axs.hist(number_employed_month_list)
 plt.show()
 
 
