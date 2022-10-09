@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 number_of_agents = 10 #1000
 start_total_wealth = 100000
-start_agents = deepcopy([[start_total_wealth/number_of_agents, 0]]*number_of_agents)
+start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
@@ -49,7 +49,6 @@ def hiring(agents, agent, average_wage):
         picked_employer = choice(len(agents), p=(picked_employer_probability)) 
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
-#TODO all employers change, why?
 
 def expenditure(agents, agent, market_value):
     consumer = agent
@@ -58,8 +57,8 @@ def expenditure(agents, agent, market_value):
     if agents[consumer][0] > 0:
         expense = choice(math.floor(agents[consumer][0]))
     else:
-        expense = 0
-    agents[consumer][1] += -expense
+        expense = 0.0
+    agents[consumer][0] += -expense
     market_value += expense
     return(market_value)
 
@@ -73,17 +72,17 @@ def market_sample(agents, agent, market_value):
         if agents[agent][1] == 0:
             agents[agent][0] += sample
         else: 
-            agents[(agents[agent][1])][0] = agents[(agents[agent][1])][0] + sample #TODO check this line
+            agents[math.floor(agents[agent][1])][0] = deepcopy(agents[math.floor(agents[agent][1])][0] + sample) 
         return(market_value)
 
 def firing(agents, agent, average_wage): 
     if agent in employers(agents=agents):
         number_of_employed = 0
         employed = []
-        for i in range(agents):
+        for i in range(len(agents)):
             if agents[i][1] == agent:
                 number_of_employed += 1
-                employed.append[i]
+                employed.append(i)
         number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)    
         for i in range(number_fired):
             fired = choice(employed)
@@ -91,10 +90,10 @@ def firing(agents, agent, average_wage):
             agents[fired][1] = 0
 
 def wage_payment(agents, agent, wage_lb, wage_ub):
-    if agent not in employers(agents=agents, agent=agent):
+    if agent not in employers(agents=agents):
         return
 
-    for i in range(agents):
+    for i in range(len(agents)):
         if agents[i][1] != agent:
             continue
 
