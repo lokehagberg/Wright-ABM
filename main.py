@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 number_of_agents = 10 #1000
 start_total_wealth = 100000
-start_agents = [[start_total_wealth/number_of_agents, 0]]*number_of_agents
+start_agents = deepcopy([[start_total_wealth/number_of_agents, 0]]*number_of_agents)
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
@@ -49,7 +49,7 @@ def hiring(agents, agent, average_wage):
         picked_employer = choice(len(agents), p=(picked_employer_probability)) 
         if agents[picked_employer][0] > average_wage:
             agents[agent][1] = picked_employer
-#TODO all employerschange, why?
+#TODO all employers change, why?
 
 def expenditure(agents, agent, market_value):
     consumer = agent
