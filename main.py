@@ -3,6 +3,7 @@ import numpy as np
 from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
+import random
 
 number_of_agents = 1000 #1000
 start_total_wealth = 100000 #100000
@@ -105,6 +106,24 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
             wage = choice(wage_ub)
         agents[agent][0] += -wage
         agents[i][0] += wage
+
+#The following make up financial aspects not included by Ian Wright
+#The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
+
+def amortization(agents, agent, total_debt):
+    if (agents[agent][2] and agents[agent][0]) > 0:
+        amortization = choice(agents[agent][0])
+        agents[agent][0] - min(amortization, agents[agent][2])
+        total_debt += - min(amortization, agents[agent][2])
+
+def loan(agents, agent, total_debt): 
+    loan = choice[agents[agent][0]] 
+    agents[agent][0] += loan
+    total_debt += loan 
+
+def interest(total_debt):
+    interest_rate = random.uniform(0.05, 0.12)    
+    total_debt *= interest_rate
 
 def historical_development(agents, time_steps):
     market_value = start_market_value
@@ -235,12 +254,6 @@ ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 #The three diagrams constructed above make up Goodwin dynamics
 
 plt.show()
-
-#The following make up financial aspects not included by Ian Wright
-#Monetary expansion and contraction will occur for some class of agents the most, this is an action
-#There are loans and amortization as actions, banks hand out loans and earn by interest rates, and some debt grows with it
-#There is an interest rate corridor that changes as an action
-
 
 
  
