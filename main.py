@@ -200,7 +200,7 @@ for i in range(len(total_firm_revenue_month_list)):
     if total_firm_revenue_month_list[i] != 0:
         total_wage_share_month_list.append(total_wage_bill_month_list[i]/total_firm_revenue_month_list[i])
     else:
-        total_wage_share_month_list.append(total_wage_bill_month_list[i]/total_firm_revenue_month_list[i])
+        total_wage_share_month_list.append(1)
 
 fig7 = plt.figure()
 ax7 = fig7.add_subplot(1, 1, 1)
@@ -210,7 +210,7 @@ ax7.set_ylabel('Frequency')
 
 wealth_month_list, employers_month_list = [], []
 for i in range(len(agents_month_list)):
-    employers_month_list.append(employers(agents=agents_month_list))
+    employers_month_list.append(employers(agents=agents_month_list[i]))
     per_agent_wealth_month_list = []
     for j in range(len(agents_month_list[0])):
         per_agent_wealth_month_list = agents_month_list[i][j][0]
