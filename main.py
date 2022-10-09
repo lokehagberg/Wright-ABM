@@ -138,8 +138,8 @@ def historical_development(agents, time_steps):
         number_employers_month_list.append(len(agents) - number_employed - number_unemployed)
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
-    plt.hist(number_employed_month_list)
-    plt.show
+        return([number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
+        total_wage_bill_month_list, market_value_month_list])
 
 #The total removed market value one month divided by the previous is the GDP growth
 #Measure the number of months the above is below or above 1 to get the recession time
@@ -149,8 +149,8 @@ def historical_development(agents, time_steps):
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
 
-historical_development(agents=start_agents, time_steps=start_time_steps)
-
+plt.hist(historical_development(agents=start_agents, time_steps=start_time_steps)[0])
+plt.show
 
 
 
