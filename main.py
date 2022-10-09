@@ -114,7 +114,7 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
 def amortization(agents, agent, total_debt):
-    if (math.floor(agents[agent][0]) > 0) and (math.floor(total_debt) > 0):
+    if math.floor(agents[agent][0]) > 0:
         amortization = choice(math.floor(agents[agent][0]))
         agents[agent][0] += - amortization
         total_debt += - amortization
@@ -128,13 +128,14 @@ def loan(agents, agent, total_debt):
     return(total_debt)
 
 def interest_effect(agents, total_debt, bank_gains):
-    total_saving = 0
-    for i in range(len(agents)):
-        total_saving += agents[i][0]
-    loan_interest_rate = (random.uniform(3, 10))/1000    
-    savings_interest_rate = (random.uniform(0, 3))/1000
-    bank_gains += total_debt * loan_interest_rate - total_saving * savings_interest_rate
-    total_debt += total_debt * loan_interest_rate
+    if total_debt > 0:
+        total_saving = 0
+        for i in range(len(agents)):
+            total_saving += agents[i][0]
+        loan_interest_rate = (random.uniform(3, 10))/1000    
+        savings_interest_rate = (random.uniform(0, 3))/1000
+        bank_gains += total_debt * loan_interest_rate - total_saving * savings_interest_rate
+        total_debt += total_debt * loan_interest_rate
     return(total_debt, bank_gains)
 
 #Credit inflation dominates M0 inflation
