@@ -4,14 +4,14 @@ from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
 
-number_of_agents = 10 #1000
+number_of_agents = 1000 #1000
 start_total_wealth = 100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10
 start_wage_ub = 90
 start_average_wage = 50
 start_market_value = 0
-start_time_steps = 1 #100
+start_time_steps = 100 #100
 
 #The three following sets are mutually disjoint
 
@@ -86,7 +86,7 @@ def firing(agents, agent, average_wage):
                 number_of_employed += 1
                 employed.append(i)
         number_fired = max((number_of_employed-(agents[agent][0]/average_wage)),0)    
-        for i in range(number_fired):
+        for i in range(math.floor(number_fired)):
             fired = choice(employed)
             employed.remove(fired)
             agents[fired][1] = 0
@@ -138,8 +138,8 @@ def historical_development(agents, time_steps):
         number_employers_month_list.append(len(agents) - number_employed - number_unemployed)
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
-        return([number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
-        total_wage_bill_month_list, market_value_month_list])
+    return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
+    total_wage_bill_month_list, market_value_month_list)
 
 #The total removed market value one month divided by the previous is the GDP growth
 #Measure the number of months the above is below or above 1 to get the recession time
@@ -149,8 +149,14 @@ def historical_development(agents, time_steps):
 #Firm growth can easily be checked as well
 #100((revenue firm / wage ) - 1) is the rate of profit
 
-plt.hist(historical_development(agents=start_agents, time_steps=start_time_steps)[0])
-plt.show
+number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list = historical_development(agents=start_agents, time_steps=start_time_steps)
+
+print(number_employed_month_list)
+fig, axs = plt.subplots(1, 1,
+                        figsize =(10, 7),
+                        tight_layout = True)
+axs.hist(number_employed_month_list)
+plt.show()
 
 
 
