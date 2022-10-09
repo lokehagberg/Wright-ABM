@@ -14,7 +14,7 @@ start_average_wage = 50 #50
 start_market_value = 0 #0
 start_debt = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 100 #100
+start_time_steps = 5 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
@@ -27,7 +27,7 @@ def employers(agents):
     for i in range(len(agents)):
         if is_employee(agents=agents, agent=i):
             employers.append(agents[i][1])
-    return(employers)
+    return(list(set(employers)))
 
 def is_unemployed(agents, agent):
     return((not is_employee(agents=agents, agent=agent)) and (agent not in employers(agents=agents)))
@@ -59,7 +59,7 @@ def expenditure(agents, agent, market_value):
     consumer = agent
     while consumer == agent:
         consumer = choice(len(agents)) 
-    if agents[consumer][0] > 0:
+    if math.floor(agents[consumer][0]) > 0:
         expense = choice(math.floor(agents[consumer][0]))
     else:
         expense = 0.0
@@ -127,12 +127,16 @@ def loan(agents, agent, total_debt):
         total_debt += loan 
     return(total_debt)
 
-def interest_effect(total_debt, bank_gains):
+def interest_effect(agents, total_debt, bank_gains):
     if total_debt > 0:
+        employer_savings = 0
+        for i in range(len(set(employers(agents=agents)))):
+            employer_savings += agents[employers(agents=agents)[i]][0]
         loan_interest_rate = (random.uniform(3, 10))/1000    
-        #Savings interest rates are always low enough to allow bank gains, 
-        # and most savings is by employers
-        bank_gains += total_debt * loan_interest_rate 
+        saving_interest_rate = (random.uniform(0, 3))/1000    
+        #Savings interest rates are always low enough to allow bank gains 
+        #Most savings is by employers
+        bank_gains += total_debt * loan_interest_rate - (employer_savings-bank_gains)*saving_interest_rate
         total_debt += total_debt * loan_interest_rate
     return(total_debt, bank_gains)
 
@@ -170,7 +174,7 @@ def historical_development(agents, time_steps, financial_aspect):
             if financial_aspect:
                 total_debt = amortization(agents=agents, agent=agent, total_debt=total_debt)
                 total_debt = loan(agents=agents, agent=agent, total_debt=total_debt)
-                interest_result = interest_effect(total_debt=total_debt, bank_gains=bank_gains)
+                interest_result = interest_effect(agents=agents, total_debt=total_debt, bank_gains=bank_gains)
                 total_debt = interest_result[0]
                 bank_gains = interest_result[1]
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
