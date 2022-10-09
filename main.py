@@ -74,6 +74,8 @@ def market_sample(agents, agent, market_value):
         else: 
             agents[math.floor(agents[agent][1])][0] = deepcopy(agents[math.floor(agents[agent][1])][0] + sample) 
         return(market_value)
+    else:
+        return(market_value)
 
 def firing(agents, agent, average_wage): 
     if agent in employers(agents=agents):
@@ -121,7 +123,7 @@ def historical_development(agents, time_steps):
             wage_payment(agents=agents, agent=agent, wage_lb=start_wage_lb, wage_ub=start_wage_ub)
             for k in range(len(agents)):
                 value_after_wage.append(agents[k][0])
-            total_wage_bill += np.dot(abs(np.array(value_after_wage) - np.array(value_before_wage)), np.array([1]*len(agents)))
+            total_wage_bill += np.dot(abs(np.asarray(value_after_wage) - np.asarray(value_before_wage)), np.array([1]*len(agents)))
         #measure class composition, the firms by number of employed, market value, wage bill
         number_employed, number_unemployed = 0, 0
         firm_size_month_list = []
