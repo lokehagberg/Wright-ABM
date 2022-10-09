@@ -219,7 +219,6 @@ for i in range(len(agents_month_list)):
 #Checking the employers ceasing to be employers gives the firm demises
 #Firm growth can easily be checked as well
 
-print(len(agents_month_list[0]))
 non_unemployed_percentage_month_list = []
 for i in range(len(number_unemployed_month_list)):
     non_unemployed_percentage_month_list.append(number_unemployed_month_list[i]/len(agents_month_list[0]))
@@ -227,6 +226,13 @@ for i in range(len(number_unemployed_month_list)):
 fig8, axs = plt.subplots(2)
 axs[0].plot(range(0,len(total_wage_share_month_list)), total_wage_share_month_list)
 axs[1].plot(range(0,len(non_unemployed_percentage_month_list)), non_unemployed_percentage_month_list)
+
+
+del non_unemployed_percentage_month_list[-1]
+fig9 = plt.figure()
+ax9 = fig9.add_subplot(1, 1, 1)
+ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
+
 
 plt.show()
 
