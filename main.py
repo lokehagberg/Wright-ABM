@@ -227,12 +227,12 @@ fig8, axs = plt.subplots(2)
 axs[0].plot(range(0,len(total_wage_share_month_list)), total_wage_share_month_list)
 axs[1].plot(range(0,len(non_unemployed_percentage_month_list)), non_unemployed_percentage_month_list)
 
-
 del non_unemployed_percentage_month_list[-1]
 fig9 = plt.figure()
 ax9 = fig9.add_subplot(1, 1, 1)
 ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 
+#The three diagrams constructed above make up Goodwin dynamics
 
 plt.show()
 
