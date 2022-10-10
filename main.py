@@ -3,17 +3,17 @@ import numpy as np
 from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
+import random 
 
 number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
-start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
+start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 start_wage_lb = 10 #10
 start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
-start_debt = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 15 #100
+start_time_steps = 5 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
@@ -112,31 +112,27 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The following make up financial aspects not included by Ian Wright
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
-def amortization(agents, agent, total_debt):
-    if (math.floor(agents[agent][0]) > 0) and (total_debt > 0):
-        amortization = min(choice(math.floor(agents[agent][0])), total_debt)
+def amortization(agents, agent):
+    if math.floor(agents[agent][2]) > 0:
+        amortization = min(choice(math.floor(agents[agent][0])), agents[agent][2])
         agents[agent][0] += - amortization
-        total_debt += - amortization
-    return(total_debt)
+        agents[agent][2] += - amortization
 
-def loan(agents, agent, total_debt): 
-    if math.floor(agents[agent][0]) > 0:
+def loan(agents, agent): 
+    if 0 >= math.floor(agents[agent][2]):
         loan = choice(math.floor(agents[agent][0]))
         agents[agent][0] += loan
-        total_debt += loan 
-    return(total_debt)
+        agents[agent][2] += loan 
 
-def interest_effect(agents, total_debt, bank_gains):
-    if total_debt > 0:
-        savings = 0
-        for i in range(len(agents)):
-            savings += agents[i][0] #or?
-        loan_interest_rate = 3/1000 #between 3/1000 and 8/1000 historically except in rare cases choice(random.uniform(3, 8))  
-        saving_interest_rate = 0 #between 0 and 3/1000   
-        #Savings interest rates are always low enough to allow bank gains 
-        bank_gains += total_debt * loan_interest_rate - savings * saving_interest_rate
-        total_debt += total_debt * loan_interest_rate
-    return(total_debt, bank_gains)
+def interest_effect(agents, bank_gains):
+    loan_interest_rate = random.uniform(3, 8)/1000 #between 3/1000 and 8/1000 historically except in rare cases (random.uniform(3, 8))/1000  
+    saving_interest_rate = 0 #between 0 and 3/1000   
+    #Savings interest rates are always low enough to allow bank gains 
+    for i in range(len(agents)):
+        bank_gains += agents[i][2] * loan_interest_rate - agents[i][0] * saving_interest_rate
+        agents[i][0] = agents[i][0] * saving_interest_rate
+        agents[i][2] = agents[i][2] * loan_interest_rate 
+    return(bank_gains)
 
 #Credit inflation dominates M0 inflation
 def credit_inflation_effect(agents, agent, bank_gains):
@@ -150,7 +146,6 @@ def credit_inflation_effect(agents, agent, bank_gains):
 
 def historical_development(agents, time_steps, financial_aspect):
     market_value = start_market_value
-    total_debt = start_debt
     bank_gains = start_bank_gains
     number_employed_month_list, number_unemployed_month_list, number_employers_month_list = [], [], []
     market_value_month_list, total_wage_bill_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list = [], [], [], [], []
@@ -170,11 +165,9 @@ def historical_development(agents, time_steps, financial_aspect):
                 value_after_wage.append(agents[k][0])
             total_wage_bill += np.dot(abs(np.asarray(value_after_wage) - np.asarray(value_before_wage)), np.array([1]*len(agents)))
             if financial_aspect:
-                total_debt = amortization(agents=agents, agent=agent, total_debt=total_debt)
-                total_debt = loan(agents=agents, agent=agent, total_debt=total_debt)
-                interest_result = interest_effect(agents=agents, total_debt=total_debt, bank_gains=bank_gains)
-                total_debt = interest_result[0]
-                bank_gains = interest_result[1]
+                amortization(agents=agents, agent=agent)
+                loan(agents=agents, agent=agent)
+                bank_gains = interest_effect(agents=agents, bank_gains=bank_gains)
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
         #measure class composition, the firms by number of employed, market value, wage bill
         agents_month_list.append(agents)
@@ -191,6 +184,9 @@ def historical_development(agents, time_steps, financial_aspect):
         number_employers_month_list.append(len(agents) - number_employed - number_unemployed)
         total_wage_bill_month_list.append(total_wage_bill)
         market_value_month_list.append(market_value)
+        total_debt = 0
+        for i in range(len(agents)):
+            total_debt += agents[i][2]
         debt_change_month_list.append(total_debt)
         bank_gains_month_list.append(bank_gains)
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
