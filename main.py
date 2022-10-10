@@ -129,14 +129,13 @@ def loan(agents, agent, total_debt):
 
 def interest_effect(agents, total_debt, bank_gains):
     if total_debt > 0:
-        employer_savings = 0
-        for i in range(len(employers(agents=agents))):
-            employer_savings += agents[employers(agents=agents)[i]][0]
-        loan_interest_rate = (random.uniform(3, 10))/1000    
-        saving_interest_rate = (random.uniform(0, 3))/1000    
+        savings = 0
+        for i in range(len(agents)):
+            savings += agents[i][0]
+        loan_interest_rate = (random.uniform(3, 8))/1000    
+        saving_interest_rate = (random.uniform(-1, 3))/1000    
         #Savings interest rates are always low enough to allow bank gains 
-        #Most savings is by employers
-        bank_gains += total_debt * loan_interest_rate - (employer_savings-bank_gains)*saving_interest_rate
+        bank_gains += total_debt * loan_interest_rate - savings * saving_interest_rate
         total_debt += total_debt * loan_interest_rate
     return(total_debt, bank_gains)
 
