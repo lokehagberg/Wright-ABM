@@ -286,7 +286,7 @@ fig9 = plt.figure()
 ax9 = fig9.add_subplot(1, 1, 1)
 ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 
-#The three diagrams constructed above make up Goodwin dynamics
+#The three diagrams constructed above make up "Goodwin dynamics"
 
 fig10, axs1 = plt.subplots(2)
 axs1[0].plot(range(0,len(debt_change_month_list)), debt_change_month_list)
