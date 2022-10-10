@@ -13,7 +13,7 @@ start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 2 #100
+start_time_steps = 100 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
@@ -126,7 +126,7 @@ def loan(agents, agent):
 
 def interest_effect(agents, bank_gains):
     loan_interest_rate = random.uniform(3, 8)/1000 #between 3/1000 and 8/1000 historically except in rare cases (random.uniform(3, 8))/1000  
-    saving_interest_rate = 0 #between 0 and 3/1000   
+    saving_interest_rate = random.uniform(0, 3)/1000 #between 0 and 3/1000   
     #Savings interest rates are always low enough to allow bank gains 
     for i in range(len(agents)):
         bank_gains += (agents[i][2] * loan_interest_rate) - (agents[i][0] * saving_interest_rate)
@@ -140,7 +140,7 @@ def credit_inflation_effect(agents, agent, bank_gains):
         if math.floor(bank_gains) > 0:
             gain_taken = choice(math.floor(bank_gains))
             agents[agent][0] += gain_taken
-            bank_gains = - gain_taken
+            bank_gains += - gain_taken
     return(bank_gains)
 
 
@@ -167,9 +167,9 @@ def historical_development(agents, time_steps, financial_aspect):
             if financial_aspect:
                 amortization(agents=agents, agent=agent)
                 loan(agents=agents, agent=agent)
-                bank_gains = interest_effect(agents=agents, bank_gains=bank_gains)
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
         #measure class composition, the firms by number of employed, market value, wage bill
+        bank_gains = interest_effect(agents=agents, bank_gains=bank_gains)
         agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
         firm_size_month_list = []
