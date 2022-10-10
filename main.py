@@ -3,7 +3,6 @@ import numpy as np
 from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
-import random
 
 number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
@@ -14,7 +13,7 @@ start_average_wage = 50 #50
 start_market_value = 0 #0
 start_debt = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 7 #100
+start_time_steps = 10 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
