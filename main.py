@@ -14,7 +14,7 @@ start_average_wage = 50 #50
 start_market_value = 0 #0
 start_debt = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 5 #100
+start_time_steps = 7 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
@@ -131,9 +131,9 @@ def interest_effect(agents, total_debt, bank_gains):
     if total_debt > 0:
         savings = 0
         for i in range(len(agents)):
-            savings += agents[i][0]
-        loan_interest_rate = (random.uniform(3, 8))/1000    
-        saving_interest_rate = (random.uniform(-1, 3))/1000    
+            savings += agents[i][0] #or?
+        loan_interest_rate = 3/1000 #between 3/1000 and 8/1000 historically except in rare cases choice(random.uniform(3, 8))  
+        saving_interest_rate = 0 #between 0 and 3/1000   
         #Savings interest rates are always low enough to allow bank gains 
         bank_gains += total_debt * loan_interest_rate - savings * saving_interest_rate
         total_debt += total_debt * loan_interest_rate
