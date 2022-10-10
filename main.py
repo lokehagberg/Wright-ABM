@@ -9,11 +9,10 @@ number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 
-#This needs to change as there is inflation, also, are there too many loans? check these **
+#are there too many loans? let it happen yearly?
 start_wage_lb = 10 #10
 start_wage_ub = 90 #90
 start_average_wage = 50 #50
-
 start_market_value = 0 #0
 start_bank_gains = 0 #0
 start_time_steps = 5 #100
@@ -108,7 +107,7 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 
         wage = 0
         while wage < wage_lb:
-            wage = choice(wage_ub)
+            wage = choice(math.floor(wage_ub))
         agents[agent][0] += -wage
         agents[i][0] += wage
 
@@ -178,6 +177,16 @@ def historical_development(agents, time_steps, financial_aspect):
         #measure class composition, the firms by number of employed, market value, wage bill
         if financial_aspect:
             bank_gains = interest_effect(agents=agents, bank_gains=bank_gains)
+        last_period_total_wealth = total_wealth
+        total_wealth = deepcopy(total_wealth + bank_gains)
+        if last_period_total_wealth != 0: 
+            inflation_rate = total_wealth/last_period_total_wealth
+        inflation_rate_month_list.append(inflation_rate)
+        if financial_aspect:
+            average_wage = (1 + inflation_rate) * average_wage
+            wage_lb = (1 + inflation_rate) * wage_lb
+            wage_ub = (1 + inflation_rate) * wage_ub
+
         agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
         firm_size_month_list = []
@@ -197,11 +206,7 @@ def historical_development(agents, time_steps, financial_aspect):
             total_debt += agents[i][2]
         debt_change_month_list.append(total_debt)
         bank_gains_month_list.append(bank_gains)
-        last_period_total_wealth = total_wealth
-        total_wealth = deepcopy(total_wealth + bank_gains)
-        if last_period_total_wealth != 0: 
-            inflation_rate = total_wealth/last_period_total_wealth
-        inflation_rate_month_list.append(inflation_rate)
+
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
     total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list, inflation_rate_month_list)
 
