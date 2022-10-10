@@ -176,7 +176,6 @@ def historical_development(agents, time_steps, financial_aspect):
                 total_debt = interest_result[0]
                 bank_gains = interest_result[1]
                 bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
-                
         #measure class composition, the firms by number of employed, market value, wage bill
         agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
