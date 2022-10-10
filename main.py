@@ -13,7 +13,7 @@ start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 5 #100
+start_time_steps = 2 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
@@ -113,13 +113,13 @@ def wage_payment(agents, agent, wage_lb, wage_ub):
 #The interest rates for loans are from P Termin 2004 Financial intermediation in the early Roman empire
 
 def amortization(agents, agent):
-    if math.floor(agents[agent][2]) > 0:
+    if (math.floor(agents[agent][2]) > 0) and (math.floor(agents[agent][0]) > 0):
         amortization = min(choice(math.floor(agents[agent][0])), agents[agent][2])
         agents[agent][0] += - amortization
         agents[agent][2] += - amortization
 
 def loan(agents, agent): 
-    if 0 >= math.floor(agents[agent][2]):
+    if (0 >= math.floor(agents[agent][2])) and (math.floor(agents[agent][0]) > 0):
         loan = choice(math.floor(agents[agent][0]))
         agents[agent][0] += loan
         agents[agent][2] += loan 
@@ -129,9 +129,9 @@ def interest_effect(agents, bank_gains):
     saving_interest_rate = 0 #between 0 and 3/1000   
     #Savings interest rates are always low enough to allow bank gains 
     for i in range(len(agents)):
-        bank_gains += agents[i][2] * loan_interest_rate - agents[i][0] * saving_interest_rate
-        agents[i][0] = agents[i][0] * saving_interest_rate
-        agents[i][2] = agents[i][2] * loan_interest_rate 
+        bank_gains += (agents[i][2] * loan_interest_rate) - (agents[i][0] * saving_interest_rate)
+        agents[i][0] += agents[i][0] * saving_interest_rate
+        agents[i][2] += agents[i][2] * loan_interest_rate 
     return(bank_gains)
 
 #Credit inflation dominates M0 inflation
