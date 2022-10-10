@@ -15,7 +15,7 @@ start_wage_ub = 90 #90
 start_average_wage = 50 #50
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 5 #100
+start_time_steps = 12 #100
 start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
