@@ -10,13 +10,14 @@ start_total_wealth = 100000 #100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 
 #are there too many loans? let it happen yearly?
-start_wage_lb = 10 #10
-start_wage_ub = 90 #90
 start_average_wage = 50 #50
+start_wage_lb = start_average_wage - 40 #10
+start_wage_ub = start_average_wage + 40 #90
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 12 #100
+start_time_steps = 100 #100
 start_financial_aspect = True #False
+max_loan_coefficient = 1.5 #1.5
 
 #The three following sets are mutually disjoint
 
@@ -122,13 +123,13 @@ def amortization(agents, agent):
 
 def loan(agents, agent): 
     if (0 >= math.floor(agents[agent][2])) and (math.floor(agents[agent][0]) > 0):
-        loan = choice(math.floor(agents[agent][0]))
+        loan = choice(math.floor(max_loan_coefficient*agents[agent][0])) 
         agents[agent][0] += loan
         agents[agent][2] += loan 
 
 def interest_effect(agents, bank_gains):
-    loan_interest_rate = random.uniform(3, 8)/1000 #between 3/1000 and 8/1000 historically except in rare cases (random.uniform(3, 8))/1000  
-    saving_interest_rate = random.uniform(0, 3)/1000 #between 0 and 3/1000   
+    loan_interest_rate = 3/1000 #between 3/1000 and 8/1000 historically except in rare cases (random.uniform(3, 8))/1000  
+    saving_interest_rate = 1/1000 #between 0 and 3/1000   
     #Savings interest rates are always low enough to allow bank gains 
     for i in range(len(agents)):
         bank_gains += (agents[i][2] * loan_interest_rate) - (agents[i][0] * saving_interest_rate)
@@ -184,8 +185,8 @@ def historical_development(agents, time_steps, financial_aspect):
         inflation_rate_month_list.append(inflation_rate)
         if financial_aspect:
             average_wage = (1 + inflation_rate) * average_wage
-            wage_lb = (1 + inflation_rate) * wage_lb
-            wage_ub = (1 + inflation_rate) * wage_ub
+            wage_lb = average_wage - 40
+            wage_ub = average_wage + 40
 
         agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
