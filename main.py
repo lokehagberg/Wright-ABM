@@ -4,6 +4,7 @@ from numpy.random import choice
 import math
 import matplotlib.pyplot as plt
 import random 
+#add venv
 
 number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
