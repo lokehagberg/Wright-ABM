@@ -14,10 +14,10 @@ start_wage_lb = start_average_wage - 40 #10
 start_wage_ub = start_average_wage + 40 #90
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 100 #100
+start_time_steps = 15 #100 #12 for financial aspect
 start_financial_aspect = True #False
-loan_ub = 1000
-loan_lb = 1000
+loan_ub = 7*40
+loan_lb = 7*40
 
 #The three following sets are mutually disjoint
 
