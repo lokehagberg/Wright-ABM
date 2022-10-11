@@ -9,7 +9,6 @@ number_of_start_agents = 1000 #1000
 start_total_wealth = 100000 #100000
 start_agents = deepcopy(np.array([[start_total_wealth/number_of_start_agents, 0, 0]]*number_of_start_agents)) #deepcopy(np.array([[start_total_wealth/number_of_agents, 0]]*number_of_agents))
 
-#are there too many loans? let it happen yearly?
 start_average_wage = 50 #50
 start_wage_lb = start_average_wage - 40 #10
 start_wage_ub = start_average_wage + 40 #90
@@ -17,7 +16,8 @@ start_market_value = 0 #0
 start_bank_gains = 0 #0
 start_time_steps = 100 #100
 start_financial_aspect = True #False
-max_loan_coefficient = 1.5 #1.5
+loan_ub = start_total_wealth/2
+loan_lb = start_total_wealth/2
 
 #The three following sets are mutually disjoint
 
@@ -123,7 +123,9 @@ def amortization(agents, agent):
 
 def loan(agents, agent): 
     if (0 >= math.floor(agents[agent][2])) and (math.floor(agents[agent][0]) > 0):
-        loan = choice(math.floor(max_loan_coefficient*agents[agent][0])) 
+        loan = 0
+        while loan_ub >= loan: 
+            loan = choice(math.floor(agents[agent][0] + loan_ub)) 
         agents[agent][0] += loan
         agents[agent][2] += loan 
 
