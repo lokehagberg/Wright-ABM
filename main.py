@@ -16,8 +16,8 @@ start_market_value = 0 #0
 start_bank_gains = 0 #0
 start_time_steps = 100 #100
 start_financial_aspect = True #False
-loan_ub = start_total_wealth/2
-loan_lb = start_total_wealth/2
+loan_ub = 1000
+loan_lb = 1000
 
 #The three following sets are mutually disjoint
 
@@ -124,7 +124,7 @@ def amortization(agents, agent):
 def loan(agents, agent): 
     if (0 >= math.floor(agents[agent][2])) and (math.floor(agents[agent][0]) > 0):
         loan = 0
-        while loan_ub >= loan: 
+        while (agents[agent][0]-loan_lb) >= loan: 
             loan = choice(math.floor(agents[agent][0] + loan_ub)) 
         agents[agent][0] += loan
         agents[agent][2] += loan 
