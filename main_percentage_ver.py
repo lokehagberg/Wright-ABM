@@ -258,7 +258,19 @@ ax6 = fig6.add_subplot(1, 1, 1)
 n, bins, patches = ax6.hist(total_firm_revenue_month_list)
 ax6.set_xlabel('Total firm revenue')
 ax6.set_ylabel('Frequency')
+
 #GDP is given by the total firm revenue over a year, the GDP growth can be derived from this
+GrossDomesticProduct_list = []
+GrossDomesticProduct = 0
+for i in range(math.floor(len(total_firm_revenue_month_list)/12)):
+    for j in range(12):
+        GrossDomesticProduct += total_firm_revenue_month_list[j]
+    GrossDomesticProduct_list.append(GrossDomesticProduct)
+GDP_growth_list = []
+for i in range(len(GrossDomesticProduct_list)-1):
+    if GrossDomesticProduct_list[i] != 0:
+        GDP_growth_list.append(GrossDomesticProduct_list[i+1]/GrossDomesticProduct_list[i])
+    else: GDP_growth_list.append(0)
 #Measure the number of months the above is below or above 1 to get the recession time
 #The yearly wage share is the total wage bill per firm revenue a year
 #100((revenue firm / wage ) - 1) is the rate of profit
