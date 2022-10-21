@@ -15,7 +15,7 @@ start_wage_lb = start_average_wage - 40 #10
 start_wage_ub = start_average_wage + 40 #90
 start_market_value = 0 #0
 start_bank_gains = 0 #0
-start_time_steps = 100 #100 #12 for financial aspect
+start_time_steps = 5 #100 #12 for financial aspect
 start_financial_aspect = True #False
 loan_multiplier = 1.85 #Similar to the loan without M0 demand for housing loans in Sweden 2020s
 
@@ -209,7 +209,7 @@ def historical_development(agents, time_steps, financial_aspect):
         debt_pc_month_list.append(total_debt/len(agents))
 
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
-    total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_month_list, inflation_rate_month_list)
+    total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_month_list, debt_pc_month_list, inflation_rate_month_list)
 
 
 number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_month_list, debt_pc_month_list, inflation_rate_month_list = historical_development(agents=start_agents, time_steps=start_time_steps, financial_aspect=start_financial_aspect)
@@ -314,10 +314,15 @@ ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 
 #The three diagrams constructed above make up "Goodwin dynamics"
 
-fig10, axs1 = plt.subplots(3)
+debt_revenue_ratio_month_list = []
+for i in range(len(total_firm_revenue_month_list)):
+    debt_revenue_ratio_month_list.append(debt_month_list[i]/total_firm_revenue_month_list[i])
+
+fig10, axs1 = plt.subplots(4)
 axs1[0].plot(range(0,len(debt_month_list)), debt_month_list)
 axs1[1].plot(range(0,len(debt_pc_month_list)), debt_pc_month_list)
-axs1[2].plot(range(0,len(inflation_rate_month_list)), inflation_rate_month_list)
+axs1[2].plot(range(0,len(debt_revenue_ratio_month_list)), debt_revenue_ratio_month_list)
+axs1[3].plot(range(0,len(inflation_rate_month_list)), inflation_rate_month_list)
 
 plt.show()
 
