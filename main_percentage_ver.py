@@ -16,9 +16,7 @@ start_wage_ub = start_average_wage + 40 #90
 start_market_value = 0 #0
 start_bank_gains = 0 #0
 start_time_steps = 100 #100 #12 for financial aspect
-start_financial_aspect = False #False
-loan_ub = 7*40
-loan_lb = 7*40
+start_financial_aspect = True #False
 
 #The three following sets are mutually disjoint
 
@@ -124,9 +122,7 @@ def amortization(agents, agent):
 
 def loan(agents, agent): 
     if (0 >= math.floor(agents[agent][2])) and (math.floor(agents[agent][0]) > 0):
-        loan = 0
-        while (agents[agent][0]-loan_lb) >= loan: 
-            loan = choice(math.floor(agents[agent][0] + loan_ub)) 
+        loan = choice(math.floor(agents[agent][0]))
         agents[agent][0] += loan
         agents[agent][2] += loan 
 
@@ -141,18 +137,20 @@ def interest_effect(agents, bank_gains):
     return(bank_gains)
 
 #Credit inflation dominates M0 inflation
-def credit_inflation_effect(agents, agent, bank_gains):
-    if agent in employers(agents=agents):
-        if math.floor(bank_gains) > 0:
-            gain_taken = choice(math.floor(bank_gains))
-            agents[agent][0] += gain_taken
-            bank_gains += - gain_taken
-    return(bank_gains)
+def credit_expansion_effect(agents, agent, bank_gains):
+    if (agent in employers(agents=agents)) and (math.floor(bank_gains) > 0):
+        gain_taken = choice(math.floor(bank_gains))
+        agents[agent][0] += gain_taken
+        bank_gains += - gain_taken
+    else: gain_taken = 0
+    return(bank_gains, gain_taken)
 
+def inflation_effect(agents, total_gain_taken):
+    for i in range(len(agents)):
+        agents[i][0] = deepcopy(math.floor(agents[i][0] * (start_total_wealth/(start_total_wealth + total_gain_taken))))
 
 def historical_development(agents, time_steps, financial_aspect):
     market_value = start_market_value
-    total_wealth = start_total_wealth
     bank_gains = start_bank_gains
     average_wage=start_average_wage
     wage_lb = start_wage_lb
@@ -161,6 +159,7 @@ def historical_development(agents, time_steps, financial_aspect):
     market_value_month_list, total_wage_bill_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list, inflation_rate_month_list = [], [], [], [], [], []
     for i in range(time_steps):
         total_wage_bill = 0
+        total_gain_taken = 0
         for j in range(len(agents)):
             value_before_wage, value_after_wage = [], []
             agent = selection(agents=agents)
@@ -177,19 +176,16 @@ def historical_development(agents, time_steps, financial_aspect):
             if financial_aspect:
                 amortization(agents=agents, agent=agent)
                 loan(agents=agents, agent=agent)
-                bank_gains = credit_inflation_effect(agents=agents, agent=agent, bank_gains=bank_gains)
+                bank_tuple = credit_expansion_effect(agents=agents, agent=agent, bank_gains=bank_gains)
+                bank_gains = bank_tuple[0]
+                total_gain_taken += bank_tuple[1]
+
         #measure class composition, the firms by number of employed, market value, wage bill
         if financial_aspect:
             bank_gains = interest_effect(agents=agents, bank_gains=bank_gains)
-        last_period_total_wealth = total_wealth
-        total_wealth = deepcopy(total_wealth + bank_gains)
-        if last_period_total_wealth != 0: 
-            inflation_rate = total_wealth/last_period_total_wealth
+            inflation_effect(agents=agents, total_gain_taken=total_gain_taken)
+        inflation_rate = total_gain_taken/start_total_wealth
         inflation_rate_month_list.append(inflation_rate)
-        if financial_aspect:
-            average_wage = (1 + inflation_rate) * average_wage
-            wage_lb = average_wage - 40
-            wage_ub = average_wage + 40
 
         agents_month_list.append(agents)
         number_employed, number_unemployed = 0, 0
@@ -209,13 +205,12 @@ def historical_development(agents, time_steps, financial_aspect):
         for i in range(len(agents)):
             total_debt += agents[i][2]
         debt_change_month_list.append(total_debt)
-        bank_gains_month_list.append(bank_gains)
 
     return(number_employed_month_list, number_unemployed_month_list, number_employers_month_list,
-    total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list, inflation_rate_month_list)
+    total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, inflation_rate_month_list)
 
 
-number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, bank_gains_month_list, inflation_rate_month_list = historical_development(agents=start_agents, time_steps=start_time_steps, financial_aspect=start_financial_aspect)
+number_employed_month_list, number_unemployed_month_list, number_employers_month_list, total_wage_bill_month_list, market_value_month_list, agents_month_list, debt_change_month_list, inflation_rate_month_list = historical_development(agents=start_agents, time_steps=start_time_steps, financial_aspect=start_financial_aspect)
 
 
 fig1 = plt.figure()
@@ -305,10 +300,9 @@ ax9.scatter(total_wage_share_month_list, non_unemployed_percentage_month_list)
 
 #The three diagrams constructed above make up "Goodwin dynamics"
 
-fig10, axs1 = plt.subplots(3)
+fig10, axs1 = plt.subplots(2)
 axs1[0].plot(range(0,len(debt_change_month_list)), debt_change_month_list)
-axs1[1].plot(range(0,len(bank_gains_month_list)), bank_gains_month_list)
-axs1[2].plot(range(0,len(inflation_rate_month_list)), inflation_rate_month_list)
+axs1[1].plot(range(0,len(inflation_rate_month_list)), inflation_rate_month_list)
 
 plt.show()
 
